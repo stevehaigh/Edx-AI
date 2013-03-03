@@ -58,6 +58,38 @@ class SearchProblem:
         """
         util.raiseNotDefined()
 
+def treeSearch(problem, fringe):
+    closed = set ()
+    node = (problem.getStartState(),[],0)
+    fringe.push(node)
+    result = []
+    done = False
+    
+    while (done == False):
+        if (fringe.isEmpty()):
+            done = True
+        else:
+            node = fringe.pop()
+            
+            if (problem.isGoalState(node[0])):
+                done = True
+                result = node[1]
+                break
+
+            else:
+                if (node[0] not in closed):
+                    successors = problem.getSuccessors(node[0])
+                    for successor in successors:
+
+                        l = list(node[1]) # how we got here
+                        l.append(successor[1]) # append action to get to next
+
+                        cost = node[2] + successor[2] # cum cost
+ 
+                        fringe.push( (successor[0], l, cost) )
+                        closed.add(node[0])
+            
+    return result
 
 def tinyMazeSearch(problem):
     """
@@ -84,19 +116,24 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    fringe = util.Stack()
+    
+    return treeSearch(problem, fringe)
+    
 
 def breadthFirstSearch(problem):
     """
     Search the shallowest nodes in the search tree first.
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    fringe = util.Queue()
+    return treeSearch(problem, fringe)
 
 def uniformCostSearch(problem):
     "Search the node of least total cost first. "
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    fringe = util.PriorityQueueWithFunction(lambda a: a[2])
+    return treeSearch(problem, fringe)
 
 def nullHeuristic(state, problem=None):
     """
@@ -108,7 +145,8 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     "Search the node that has the lowest combined cost and heuristic first."
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    fringe = util.PriorityQueueWithFunction(lambda a: heuristic(a[0], problem) + a[2])
+    return treeSearch(problem, fringe)
 
 
 # Abbreviations
