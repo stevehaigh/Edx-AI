@@ -480,18 +480,26 @@ def foodHeuristic(state, problem):
     "*** YOUR CODE HERE ***"
 
     foodGrid = state[1]
-    maxmd = 0
+    nearestDist = 9999;
+    furthestDist = 0
+    nearestPair = (0,0)
     pos = state[0]
 
     if foodGrid.count() == 0:
         return 0
 
     for foodCoord in foodGrid.asList():
-        tempmd = abs(foodCoord[0] - pos[0]) + abs(foodCoord[1] - pos[1])
-        if tempmd > maxmd:
-            maxmd = tempmd
+        temp = abs(foodCoord[0] - pos[0]) + abs(foodCoord[1] - pos[1])
+        if temp < nearestDist:
+            nearestDist = temp
+            nearestPair = (foodCoord[0], foodCoord[1])
+        
+    for foodCoord in foodGrid.asList():
+        temp = abs(foodCoord[0] - nearestPair[0]) + abs(foodCoord[1] - nearestPair[1])
+        if temp > furthestDist:
+            furthestDist = temp
 
-    return maxmd  
+    return  nearestDist + furthestDist
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
