@@ -11,6 +11,7 @@
 from util import manhattanDistance
 from game import Directions
 import random, util
+import math
 
 from game import Agent
 
@@ -69,8 +70,68 @@ class ReflexAgent(Agent):
         newGhostStates = successorGameState.getGhostStates()
         newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
 
+        # print "sgs = ", successorGameState
+        # print "new pos =", newPos
+        # print "new food = ", newFood
+        # print "new ghost states = ", newGhostStates
+        # print "new scared times = ", newScaredTimes
+
+        distToNearestGhost = 3
+
+        for ghostState in newGhostStates:
+            dist = manhattanDistance(newPos, ghostState.configuration.getPosition())
+            if dist < distToNearestGhost:
+              distToNearestGhost = dist
+
+        dtnf = distanceToNearestFood(newPos, newFood)
+
         "*** YOUR CODE HERE ***"
-        return successorGameState.getScore()
+        return (2 ** distToNearestGhost) + 1/(dtnf) + successorGameState.getScore() * 2
+
+        # return successorGameState.getScore()
+
+def distanceToNearestFood(pos, allFood):
+  minDistance = 999999
+
+  for foodPos in getAllFoodPositions(allFood):
+    dist = manhattanDistance(pos, foodPos)
+    if dist < minDistance: 
+      minDistance = dist
+
+  if minDistance == 999999:
+    # no food left, this is a good thing so return a small value
+    return 0.00001
+
+  return minDistance
+
+def averageDistanceToFood(pos, allFood):
+  cumDist = 0
+  count = 0
+
+  for foodPos in getAllFoodPositions(allFood):
+    cumDist += manhattanDistance(pos, foodPos)
+    count += 1
+
+  if count == 0:
+    # no food left, this is a good thing so return a small value
+    return 0.00001
+
+  return cumDist/count
+
+def getAllFoodPositions(food):
+  x = 0
+  positions = []
+
+  for fx in food:
+    y = 0
+    for fy in fx:
+      if fy:
+        positions.append((x,y))
+      y += 1
+    x += 1
+
+  return positions
+
 
 def scoreEvaluationFunction(currentGameState):
     """
