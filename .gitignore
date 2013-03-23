@@ -22,3 +22,6 @@ search/.metadata/.plugins/org.eclipse.ui.workbench/workingsets.xml
 search/.metadata/.plugins/org.scala-ide.sdt.core/scala-ide.log
 search/.metadata/version.ini
 *.pyc
+search/.idea/
+search/.project
+search/.pydevproject
