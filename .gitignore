@@ -25,3 +25,4 @@ search/.metadata/version.ini
 search/.idea/
 search/.project
 search/.pydevproject
+*/.idea/*
