@@ -80,11 +80,17 @@ class QLearningAgent(ReinforcementAgent):
           you should return None.
         """
         "*** YOUR CODE HERE ***"
+        legalActions = self.getLegalActions(state)
+
+        if len(legalActions) == 0:
+          return None
+
         maxVal = -99999
         allActions = []
 
-        for action in self.getLegalActions(state):
+        for action in legalActions:
           temp = self.getQValue(state, action)
+
           if temp > maxVal:
             maxVal = temp
           allActions.append((temp, action))
@@ -198,14 +204,30 @@ class ApproximateQAgent(PacmanQAgent):
           where * is the dotProduct operator
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        
+        # Sum (feature * w) for all features
+        sum = 0.0
+
+        features = self.featExtractor.getFeatures(state, action)
+        
+        for key in features.sortedKeys():
+          sum += features[key] * self.weights[key]
+
+        return sum
+
 
     def update(self, state, action, nextState, reward):
         """
            Should update your weights based on transition
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        Q = self.getQValue(state, action)
+        diff = reward + self.discount * self.computeValueFromQValues(nextState) - Q
+
+        features = self.featExtractor.getFeatures(state, action)
+        for key in features.sortedKeys():
+          self.weights[key] = self.weights[key] + self.alpha * diff * features[key]
+
 
     def final(self, state):
         "Called at the end of each game."
